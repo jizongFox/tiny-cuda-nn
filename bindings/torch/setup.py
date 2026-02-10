@@ -2,7 +2,7 @@ import os
 
 import re
 from setuptools import setup
-from pkg_resources import parse_version
+from packaging.version import Version
 import subprocess
 import shutil
 import sys
@@ -14,21 +14,21 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 ROOT_DIR = os.path.dirname(os.path.dirname(SCRIPT_DIR))
 
 def min_supported_compute_capability(cuda_version):
-	if cuda_version >= parse_version("13.0"):
+	if cuda_version >= Version("13.0"):
 		return 75
-	elif cuda_version >= parse_version("12.0"):
+	elif cuda_version >= Version("12.0"):
 		return 50
 	else:
 		return 20
 
 def max_supported_compute_capability(cuda_version):
-	if cuda_version < parse_version("11.0"):
+	if cuda_version < Version("11.0"):
 		return 75
-	elif cuda_version < parse_version("11.1"):
+	elif cuda_version < Version("11.1"):
 		return 80
-	elif cuda_version < parse_version("11.8"):
+	elif cuda_version < Version("11.8"):
 		return 86
-	elif cuda_version < parse_version("12.8"):
+	elif cuda_version < Version("12.8"):
 		return 90
 	else:
 		return 120
@@ -89,9 +89,9 @@ if os.system("nvcc --version") == 0:
 	cuda_version = re.search(r"release (\S+),", nvcc_out)
 
 	if cuda_version:
-		cuda_version = parse_version(cuda_version.group(1))
+		cuda_version = Version(cuda_version.group(1))
 		print(f"Detected CUDA version {cuda_version}")
-		if cuda_version >= parse_version("11.0"):
+		if cuda_version >= Version("11.0"):
 			cpp_standard = 17
 
 		supported_compute_capabilities = [
